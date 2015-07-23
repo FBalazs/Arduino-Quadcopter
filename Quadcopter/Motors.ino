@@ -12,7 +12,7 @@ void initMotors(){
   motorBR.attach(MOTOR_PIN_BR);
 }
 
-void setMotors(int pwFL,pwFR,pfBL,pwBR){
+void updateMotors(int pwFL,pwFR,pfBL,pwBR){
   motorFL.write(pwFL);
   motorFR.write(pwFR);
   motorBL.write(pwBL);
