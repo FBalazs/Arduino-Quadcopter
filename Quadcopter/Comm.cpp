@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #define xbee Serial1
 #define BAUD 57600
 
@@ -11,7 +13,7 @@ void initComm() {
   while(!xbee);
 }
 
-void parseCommand(String cmd, String params[], int pn) {
+/*void parseCommand(String cmd, String params[], int pn) {
   if(cmd == "ch" && pn == 5){
     ch_lift = params[0].toInt()/(double)params[4].toInt();
     ch_pitch = params[1].toInt()/(double)params[4].toInt()*PITCH_MAX;
@@ -65,5 +67,5 @@ void updateComm() {
       ccmd = "";
     }
   }
-}
+}*/
 

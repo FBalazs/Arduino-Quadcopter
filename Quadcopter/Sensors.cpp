@@ -1,5 +1,6 @@
-MPU6050 mpu6050;
+#include <MPU6050.h>
 
+MPU6050 mpu6050;
 
 int16_t gyro0_x, gyro0_y, gyro0_z;
 int16_t accel_x, accel_y, accel_z;

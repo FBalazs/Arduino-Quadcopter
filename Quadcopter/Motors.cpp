@@ -1,3 +1,5 @@
+#include <Servo.h>
+
 #define MOTOR_PIN_FL 9
 #define MOTOR_PIN_FR 10
 #define MOTOR_PIN_BL 11
