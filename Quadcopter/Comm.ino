@@ -1,6 +1,11 @@
 #define xbee Serial1
 #define BAUD 57600
 
+#define PITCH_MAX 30
+#define ROLL_MAX 30
+#define YAW_MAX 30
+
+
 void initComm() {
   xbee.begin(BAUD);
   while(!xbee);
