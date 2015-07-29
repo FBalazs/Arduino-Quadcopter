@@ -6,7 +6,9 @@
 #include <Servo.h>
 #include "PID.cpp"
 
-
+//Current state of the copter
+//Calculated in Sensors.cpp
+//pitch and roll are integrals, but yaw is speed
 double pitch = 0,yaw = 0,roll = 0;
 
 double ch_lift = 0, ch_pitch = 0, ch_yaw = 0, ch_roll = 0;
