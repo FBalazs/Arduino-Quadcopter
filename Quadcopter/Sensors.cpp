@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include <MPU6050.h>
 
 MPU6050 mpu6050;
@@ -25,7 +27,7 @@ void initMPU(){
   gyro0_y = -gyro0_y;
 }
 
-void readMPU(){
+void readMPU(double *pitch, double *yaw, double *roll, double dt){
   mpu6050.getMotion6(&accel_z, &accel_x, &accel_y, &gyro_z, &gyro_x, &gyro_y);
   accel_z = -accel_z;
   gyro_z = -gyro_z;
@@ -35,32 +37,32 @@ void readMPU(){
 
   //Calculating pitch
   double accelPitch = atan2(accel_y,accel_z) *180/M_PI - 90;
-  double gyroPitch = pitch - (long)((gyro_x-gyro0_x)*250/32768*dt); //It is an integral
+  double gyroPitch = *pitch - (long)((gyro_x-gyro0_x)*250/32768*dt); //It is an integral
   //TODO Kalman filter
-  while(180 < abs(rawgyro-rawaccel))
-    rawaccel += 360*(rawgyro-rawaccel)/abs(rawgyro-rawaccel); //Correction in case it rolled over
+  while(180 < abs(gyroPitch-accelPitch))
+    accelPitch += 360*(gyroPitch-accelPitch)/abs(gyroPitch-accelPitch); //Correction in case it rolled over
   //The accelerometer measure is inaccurate, but it is taken into account
   //so the errors of the gyro integral are corrected
-  pitch = rawgyro*0.98+rawaccel*0.02; 
-  while(pitch < -180)
-    pitch += 360;
-  while(180 < pitch)
-    pitch -= 360;
+  *pitch = gyroPitch*0.98+accelPitch*0.02; 
+  while(*pitch < -180)
+    *pitch += 360;
+  while(180 < *pitch)
+    *pitch -= 360;
 
     
   //Calculating yaw 
-  yaw = (long)(gyro0_y-gyro_y)*250/32768.0;
+  *yaw = (long)(gyro0_y-gyro_y)*250/32768.0;
 
   //Calculating roll
-    rawaccel = atan2(accel_y, accel_x)*180/M_PI - 90;
-  rawgyro = roll-((long)(gyro_z-gyro0_z)*250/32768*dt);
-  while(180 < abs(rawgyro-rawaccel))
-    rawaccel += 360*(rawgyro-rawaccel)/abs(rawgyro-rawaccel);
-  roll = rawgyro*0.98+rawaccel*0.02;
-  while(roll < -180)
-    roll += 360;
-  while(180 < roll)
-    roll -= 360;
+  double accelRoll = atan2(accel_y, accel_x)*180/M_PI - 90;
+  double gyroRoll = *roll-((long)(gyro_z-gyro0_z)*250/32768*dt);
+  while(180 < abs(gyroRoll-accelRoll))
+    accelRoll += 360*(gyroRoll-accelRoll)/abs(gyroRoll-accelRoll);
+  *roll = gyroRoll*0.98+accelRoll*0.02;
+  while(*roll < -180)
+    *roll += 360;
+  while(180 < *roll)
+    *roll -= 360;
 }
 
 

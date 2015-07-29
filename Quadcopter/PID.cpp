@@ -1,3 +1,6 @@
+#include <Arduino.h>
+
+
 class PID {
 public:
   double pGain, iGain, dGain;

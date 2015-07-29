@@ -4,7 +4,11 @@
 #include <MPU6050.h>
 
 #include <Servo.h>
+#include "Comm.cpp"
+#include "Debug.cpp"
+#include "Motors.cpp"
 #include "PID.cpp"
+#include "Sensors.cpp"
 
 //Current state of the copter
 //Calculated in Sensors.cpp
@@ -26,10 +30,13 @@ void setup() {
 
 
   ptime = millis();
+  initMPU();
 }
 
 void loop() {
   ctime = millis();
+  readMPU(&pitch,&yaw,&roll,dt);
+  printPYR(pitch,yaw,roll);
   //Possibly needs revision
   dt = (ctime-ptime)/1000000.0;
 
