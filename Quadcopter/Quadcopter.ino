@@ -4,11 +4,14 @@
 #include <MPU6050.h>
 
 #include <Servo.h>
-#include "Comm.cpp"
+
+/*#include "Comm.cpp"
 #include "Debug.cpp"
 #include "Motors.cpp"
 #include "PID.cpp"
-#include "Sensors.cpp"
+#include "Sensors.cpp"*/
+
+#define DEBUG_BAUD 115200
 
 //Current state of the copter
 //Calculated in Sensors.cpp
@@ -21,9 +24,9 @@ double ch_lift = 0, ch_pitch = 0, ch_yaw = 0, ch_roll = 0;
 double dt;
 long ctime, ptime, clocktime, lastcontroltime = -1;
 
-PID pidPitch = PID(0,0,0);
+/*PID pidPitch = PID(0,0,0);
 PID pidYaw = PID(0,0,0);
-PID pidRoll = PID(0,0,0);
+PID pidRoll = PID(0,0,0);*/
 
 
 void setup() {
@@ -31,9 +34,15 @@ void setup() {
 
   ptime = millis();
   initMPU();
+  initDebug(DEBUG_BAUD);
 }
 
+bool blink = true;
+
 void loop() {
+  if(blink) digitalWrite(13,HIGH);
+  else digitalWrite(13,LOW);
+  blink = !blink;
   ctime = millis();
   readMPU(&pitch,&yaw,&roll,dt);
   printPYR(pitch,yaw,roll);
