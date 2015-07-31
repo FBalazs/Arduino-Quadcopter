@@ -11,11 +11,11 @@
 #include "PID.cpp"
 #include "Sensors.cpp"*/
 
-#define DEBUG_BAUD 115200
+#define DEBUG_BAUD 9600
 
 //Current state of the copter
 //Calculated in Sensors.cpp
-//pitch and roll are integrals, but yaw is speed
+//pitch and roll are states, but yaw is speed
 double pitch = 0,yaw = 0,roll = 0;
 
 double ch_lift = 0, ch_pitch = 0, ch_yaw = 0, ch_roll = 0;
@@ -45,7 +45,7 @@ void loop() {
   blink = !blink;
   ctime = millis();
   readMPU(&pitch,&yaw,&roll,dt);
-  printPYR(pitch,yaw,roll);
+  printPYR(pitch,yaw,roll,dt);
   //Possibly needs revision
   dt = (ctime-ptime)/1000000.0;
 

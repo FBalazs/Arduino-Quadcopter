@@ -7,8 +7,9 @@
 #define ROLL_MAX 30
 #define YAW_MAX 30
 
+String ccmd = "";
 
-/*void initComm() {
+void initComm() {
   xbee.begin(BAUD);
   while(!xbee);
 }
@@ -23,18 +24,18 @@ void parseCommand(String cmd, String params[], int pn) {
     return;
   }
   if(cmd == "g" && pn == 4){
-    pitchIntegral = 0;
-    rollIntegral = 0;
-    yawIntegral = 0;
-    rollP = pitchP = yawP = params[0].toInt()/(double)atol(params[3].c_str());
-    rollI = pitchI = yawI = params[1].toInt()/(double)atol(params[3].c_str());
-    rollD = pitchD = yawD = params[2].toInt()/(double)atol(params[3].c_str());
-    Serial.print(pitchP*atol(params[3].c_str()));
-    Serial.print('\t');
-    Serial.print(pitchI*atol(params[3].c_str()));
-    Serial.print('\t');
-    Serial.println(pitchD*atol(params[3].c_str()));
-    return;
+    //pitchIntegral = 0;
+    //rollIntegral = 0;
+    //yawIntegral = 0;
+    //rollP = pitchP = yawP = params[0].toInt()/(double)atol(params[3].c_str());
+    //rollI = pitchI = yawI = params[1].toInt()/(double)atol(params[3].c_str());
+    //rollD = pitchD = yawD = params[2].toInt()/(double)atol(params[3].c_str());
+    //Serial.print(pitchP*atol(params[3].c_str()));
+    //Serial.print('\t');
+    //Serial.print(pitchI*atol(params[3].c_str()));
+    //Serial.print('\t');
+    //Serial.println(pitchD*atol(params[3].c_str()));
+    //return;
   }
   xbee.println("error");
 }
@@ -67,5 +68,5 @@ void updateComm() {
       ccmd = "";
     }
   }
-}*/
+}
 
