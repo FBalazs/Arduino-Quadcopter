@@ -1,7 +1,6 @@
 #include <Arduino.h>
 
 #define xbee Serial1
-#define BAUD 57600
 
 #define PITCH_MAX 30
 #define ROLL_MAX 30
@@ -9,8 +8,8 @@
 
 String ccmd = "";
 
-void initComm() {
-  xbee.begin(BAUD);
+void initComm(long baud) {
+  xbee.begin(baud);
   while(!xbee);
 }
 
@@ -68,5 +67,11 @@ void updateComm() {
       ccmd = "";
     }
   }
+}
+
+void sendTPS(int tps){
+  xbee.print("print tps ");
+  xbee.print(tps);
+  xbee.print('\n');
 }
 

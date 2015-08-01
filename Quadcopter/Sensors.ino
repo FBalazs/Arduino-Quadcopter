@@ -55,9 +55,12 @@ void readMPU(double *pitch, double *yaw, double *roll, double dt){
 
   //Calculating roll
   double accelRoll = atan2(accel_y, accel_x)*180/M_PI - 90;
-  double gyroRoll = *roll-((long)(gyro_z-gyro0_z)*250/32768*dt);
+  double gyroRoll = *roll-((long)(gyro_z-gyro0_z)*250/32768*dt); //It is an integral
+  //TODO Kalman filter
   while(180 < abs(gyroRoll-accelRoll))
-    accelRoll += 360*(gyroRoll-accelRoll)/abs(gyroRoll-accelRoll);
+    accelRoll += 360*(gyroRoll-accelRoll)/abs(gyroRoll-accelRoll);//Correction in case it rolled over
+  //The accelerometer measure is inaccurate, but it is taken into account
+  //so the errors of the gyro integral are corrected
   *roll = gyroRoll*0.98+accelRoll*0.02;
   while(*roll < -180)
     *roll += 360;

@@ -1,17 +1,20 @@
 #include <Arduino.h>
 
 
-void initDebug(int baud){
+void initDebug(long baud){
   Serial.begin(baud);
 }
 
-void printPYR(double pitch, double yaw, double roll,double dt){
+void printPYR(double pitch, double yaw, double roll){
   Serial.print(pitch);
   Serial.print("\t");
   Serial.print(yaw);
   Serial.print("\t");
-  Serial.print(roll);
-  Serial.print("\t");
-  Serial.println(dt*10000);
+  Serial.println(roll);
+}
+
+void debugTPS(int tps){
+  Serial.print(tps);
+  Serial.println(" TPS");
 }
 
