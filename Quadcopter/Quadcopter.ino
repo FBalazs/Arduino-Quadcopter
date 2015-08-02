@@ -43,6 +43,9 @@ void setup() {
   initMPU();
   initDebug(DEBUG_BAUD);
   initComm(XBEE_BAUD);
+  initMotors();
+  
+  delay(1000); //JUST FOR TESTS
 }
 
 bool blink = true;
@@ -66,6 +69,7 @@ void loop() {
   }
   
   readMPU(&pitch,&yaw,&roll,dt);
+  updateComm();
 
 
   ptime = ctime;
