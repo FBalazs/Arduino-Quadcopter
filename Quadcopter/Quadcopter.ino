@@ -17,7 +17,7 @@
 //Current state of the copter
 //Calculated in Sensors.cpp
 //pitch and roll are states, but yaw is speed
-double pitch = 0,yaw = 0,roll = 0;
+double pitch = 0, yaw = 0, roll = 0;
 
 double ch_lift = 0, ch_pitch = 0, ch_yaw = 0, ch_roll = 0;
 
@@ -65,10 +65,10 @@ void loop() {
 
   //Printing state in every 10th tick for debug reasons
   if((tps % 10) == 0 ){
-    printPYR(pitch,yaw,roll);
+    printPYR(pitch, yaw, roll);
   }
   
-  readMPU(&pitch,&yaw,&roll,dt);
+  readMPU(&pitch, &yaw, &roll, dt);
   updateComm();
 
 
