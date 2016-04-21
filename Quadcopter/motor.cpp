@@ -1,5 +1,6 @@
-#include <Arduino.h>
 #include "motor.h"
+
+#include <Arduino.h>
 
 void Motor::calibrate(){
   delay(1500);
@@ -10,7 +11,6 @@ void Motor::calibrate(){
   servo.writeMicroseconds(MIN_PULSE_LENGTH);
   delay(2000);
 }
-
 
 void Motor::updateSpeed(double speed){
   if(speed > 1.0)
