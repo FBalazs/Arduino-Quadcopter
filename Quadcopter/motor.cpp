@@ -1,5 +1,7 @@
 #include "motor.h"
 
+#include <Arduino.h>
+
 void Motor::calibrate(){
   delay(1500);
   analogWrite(pin,MAX_POW);
@@ -12,6 +14,10 @@ void Motor::calibrate(){
 
 
 void Motor::updateSpeed(double speed){
+  if(speed > 1.0)
+    speed = 1.0;
+  if(speed < 0.0)
+    speed = 0.0;
   analogWrite(pin,speed*(MAX_POW-MIN_POW) + MIN_POW);
 }
 
