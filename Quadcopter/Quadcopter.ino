@@ -9,6 +9,10 @@ long ptime; //Time of the beginning of the previous tick
 double dt; //Time since the last tick in seconds
 long clocktime = 0; //Used to count TPS, stores the time since the last TPS print
 
+PID pidPitch(90.0,0.0,0.0);
+PID pidYaw(0.0,0.0,0.0);
+PID pidRoll(90.0,0.0,0.0);
+
 void setup() {
   ptime = micros();
   clocktime = ptime;
@@ -19,21 +23,24 @@ void setup() {
   delay(1000);
 }
 
-void loop() {
-  Sensors::update();
+double pidp, pidy, pidr, chl;
 
+void loop() {
   //Time management
   ctime = micros();
   dt = (ctime-ptime)/1000000.0;
   if(ctime-clocktime >= 1000000){
     Comm::sendTPS(tps);
+    Comm::print("mpuSamples ");
+    Comm::print(String(Sensors::getSampleCount()));
+    Comm::print("\n");
+    Sensors::resetSampleCount();
     tps = 0;
     clocktime = ctime;
   }
   tps++;
 
-  //Printing state in every 10th tick for debug reasons
-  if(true && (tps % 550) == 0 ){
+  if(false && (tps % 100) == 0 ){
     Comm::print("pitch=");
     Comm::print(String(Sensors::getPitch()));
     Comm::print("\tyaw=");
@@ -45,6 +52,10 @@ void loop() {
   
   Sensors::update();
   Comm::update();
+   pidp = pidPitch.compute(Sensors::getPitch(), Comm::getChPitch(), dt);
+   pidy = pidYaw.compute(Sensors::getYaw(), Comm::getChYaw(), dt);
+   pidr = pidRoll.compute(Sensors::getRoll(), Comm::getChRoll(), dt);
+   chl = Comm::getChLift();
 
   ptime = ctime;
 }

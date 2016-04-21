@@ -64,6 +64,8 @@ namespace Sensors {
     }
   }
 
+  long sampleCount = 0;
+
   void update() {
     if(mpuInterrupt || fifoCount >= packetSize) {
       // reset interrupt flag and get INT_STATUS byte
@@ -93,7 +95,16 @@ namespace Sensors {
         mpu.dmpGetQuaternion(&q, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);
         mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
+        ++sampleCount;
       }
     }
+  }
+
+  long getSampleCount() {
+    return sampleCount;
+  }
+
+  void resetSampleCount() {
+    sampleCount = 0;
   }
 }

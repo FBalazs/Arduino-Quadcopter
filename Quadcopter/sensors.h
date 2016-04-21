@@ -7,6 +7,8 @@ namespace Sensors {
   double getPitch();
   double getYaw();
   double getRoll();
+  long getSampleCount();
+  void resetSampleCount();
 }
 
 #endif //SENSOR_H

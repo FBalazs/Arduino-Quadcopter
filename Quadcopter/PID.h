@@ -2,19 +2,36 @@
 #define PID_H
 
 class PID {
-public:
   double pGain, iGain, dGain;
-  double pErr;
+  double pState;
   double integral;
+  double output;
+public:
   
-  PID(double p, double i, double d);
-  
-  double compute(double err);
+  PID(double p, double i, double d):pGain(p),iGain(i),dGain(d),integral(0),pState(0){}
 
-  double updateGains(double p, double i, double d);
-
-  void reset();
+  double getOutput() {
+    return output;
+  }
   
+  double compute(double state, double setpoint, double dt) {
+    double err = setpoint-state;
+    output = pGain*err + iGain*integral - dGain*(state-pState);
+    integral += err;
+    pState = state;
+    return output;
+  }
+
+  double updateGains(double p, double i, double d) {
+    pGain = p;
+    iGain = i;
+    dGain = d;
+  }
+
+  void reset() {
+    integral = 0;
+    pState = 0;
+  }
 };
 
 #endif //PID_H
