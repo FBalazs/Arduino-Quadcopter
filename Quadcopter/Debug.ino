@@ -1,6 +1,3 @@
-#include <Arduino.h>
-
-
 void initDebug(long baud){
   Serial.begin(baud);
 }

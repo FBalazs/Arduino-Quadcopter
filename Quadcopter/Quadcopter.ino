@@ -4,6 +4,9 @@
 #include <MPU6050.h>
 
 #include <Servo.h>
+#include "PID.h"
+#include "motor.h"
+
 
 /*#include "Comm.cpp"
 #include "Debug.cpp"
@@ -43,7 +46,6 @@ void setup() {
   initMPU();
   initDebug(DEBUG_BAUD);
   initComm(XBEE_BAUD);
-  initMotors();
   
   delay(1000); //JUST FOR TESTS
 }

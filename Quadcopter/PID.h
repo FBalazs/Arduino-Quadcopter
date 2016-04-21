@@ -1,4 +1,7 @@
-/*class PID {
+#ifndef PID_H
+#define PID_H
+
+class PID {
 public:
   double pGain, iGain, dGain;
   double pErr;
@@ -12,4 +15,6 @@ public:
 
   void reset();
   
-};*/
+};
+
+#endif //PID_H

@@ -1,5 +1,3 @@
-#include <Arduino.h>
-
 #define xbee Serial1
 
 #define PITCH_MAX 30
