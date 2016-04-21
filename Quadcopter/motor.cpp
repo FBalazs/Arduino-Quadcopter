@@ -13,6 +13,10 @@ void Motor::calibrate(){
 
 
 void Motor::updateSpeed(double speed){
-  servo.writeMicroseconds(speed*(MAX_PULSE_LENGTH-MIN_PULSE_LENGTH) + MIN_PULSE_LENGTH);
+  if(speed > 1.0)
+    speed = 1.0;
+  if(speed < 0.0)
+    speed = 0.0;
+  servo.writeMicroseconds(speed*(MAX_PULSE_LENGTH - MIN_PULSE_LENGTH) + MIN_PULSE_LENGTH);
 }
 
