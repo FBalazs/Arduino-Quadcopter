@@ -12,6 +12,7 @@ long clocktime = 0; //Used to count TPS, stores the time since the last TPS prin
 PID pidPitch(90.0,0.0,0.0);
 PID pidYaw(0.0,0.0,0.0);
 PID pidRoll(90.0,0.0,0.0);
+Motor motFL(9), motFR(10), motBL(11), motBR(12);
 
 void setup() {
   ptime = micros();
@@ -19,6 +20,10 @@ void setup() {
   
   Sensors::init(0);
   Comm::init(57600);
+  motFL.calibrate();
+  motFR.calibrate();
+  motBL.calibrate();
+  motBR.calibrate();
   
   delay(1000);
 }
@@ -52,10 +57,11 @@ void loop() {
   
   Sensors::update();
   Comm::update();
-   pidp = pidPitch.compute(Sensors::getPitch(), Comm::getChPitch(), dt);
-   pidy = pidYaw.compute(Sensors::getYaw(), Comm::getChYaw(), dt);
-   pidr = pidRoll.compute(Sensors::getRoll(), Comm::getChRoll(), dt);
-   chl = Comm::getChLift();
+  
+  pidp = pidPitch.compute(Sensors::getPitch(), Comm::getChPitch(), dt);
+  pidy = pidYaw.compute(Sensors::getYaw(), Comm::getChYaw(), dt);
+  pidr = pidRoll.compute(Sensors::getRoll(), Comm::getChRoll(), dt);
+  chl = Comm::getChLift();
 
   ptime = ctime;
 }
