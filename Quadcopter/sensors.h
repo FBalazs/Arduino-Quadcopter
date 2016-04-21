@@ -2,7 +2,7 @@
 #define SENSORS_H
 
 namespace Sensors {
-  void init();
+  void init(int PIN_INT);
   void update();
   double getPitch();
   double getYaw();

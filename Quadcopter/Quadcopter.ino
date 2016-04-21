@@ -33,22 +33,28 @@ PID pidRoll = PID(0,0,0);*/
 
 
 void setup() {
+  Serial.begin(9600);
+  Sensors::init(0);
 
-
-  ptime = micros();
+  /*ptime = micros();
   clocktime = ptime;
-  Sensors::init();
+  Sensors::init(0);
   initDebug(DEBUG_BAUD);
   initComm(XBEE_BAUD);
   
-  delay(1000); //JUST FOR TESTS
+  delay(1000); //JUST FOR TESTS*/
 }
 
-bool blink = true;
-
 void loop() {
+  Sensors::update();
+  Serial.print("pitch=");
+  Serial.print(Sensors::getPitch());
+  Serial.print("\tyaw=");
+  Serial.print(Sensors::getYaw());
+  Serial.print("\troll=");
+  Serial.println(Sensors::getRoll());
 
-  //Time management
+  /*//Time management
   ctime = micros();
   dt = (ctime-ptime)/1000000.0;
   if(ctime-clocktime >= 1000000){
@@ -68,6 +74,6 @@ void loop() {
   updateComm();
 
 
-  ptime = ctime;
+  ptime = ctime;*/
 }
 
