@@ -6,13 +6,7 @@
 #include <Servo.h>
 #include "PID.h"
 #include "motor.h"
-
-
-/*#include "Comm.cpp"
-#include "Debug.cpp"
-#include "Motors.cpp"
-#include "PID.cpp"
-#include "Sensors.cpp"*/
+#include "sensors.h"
 
 #define DEBUG_BAUD 115200
 #define XBEE_BAUD 57600
@@ -43,7 +37,7 @@ void setup() {
 
   ptime = micros();
   clocktime = ptime;
-  initMPU();
+  Sensors::init();
   initDebug(DEBUG_BAUD);
   initComm(XBEE_BAUD);
   
@@ -70,7 +64,7 @@ void loop() {
     printPYR(pitch, yaw, roll);
   }
   
-  readMPU(&pitch, &yaw, &roll, dt);
+  Sensors::update();
   updateComm();
 
 
