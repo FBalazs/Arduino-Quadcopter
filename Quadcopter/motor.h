@@ -5,12 +5,12 @@
 
 class Motor{
 private:
-  static const int MAX_POW = 250;
-  static const int MID_POW = 80;
-  static const int MIN_POW = 20;
-  int pin;
+  static const int MIN_PULSE_LENGTH = 1150;
+  static const int MID_PULSE_LENGTH = 1500;
+  static const int MAX_PULSE_LENGTH = 1950;
+  Servo servo;
 public:
-  Motor(int pin):pin(pin){}
+  Motor(int pin){servo.attach(pin);}
   void updateSpeed(double);
   void calibrate();
 };
