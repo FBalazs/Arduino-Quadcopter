@@ -1,5 +1,6 @@
-#include <Arduino.h>
+#include "sensors.h"
 
+//#include <Arduino.h>
 #include <MPU6050_6Axis_MotionApps20.h>
 
 namespace Sensors {
@@ -27,7 +28,7 @@ namespace Sensors {
   }
 
   double getPitch() {
-    return ypr[1]*180/M_PI;
+    return -ypr[1]*180/M_PI;
   }
 
   double getYaw() {
@@ -35,7 +36,7 @@ namespace Sensors {
   }
 
   double getRoll() {
-    return ypr[2]*180/M_PI;
+    return -ypr[2]*180/M_PI;
   }
   
   void init(int PIN_INT) {
