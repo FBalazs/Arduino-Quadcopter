@@ -4,9 +4,9 @@
 namespace Sensors {
   void init(int PIN_INT);
   void update();
-  double getPitch();
-  double getYaw();
-  double getRoll();
+  float getPitch();
+  float getYaw();
+  float getRoll();
   long getSampleCount();
   void resetSampleCount();
 }

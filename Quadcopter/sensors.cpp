@@ -27,15 +27,15 @@ namespace Sensors {
     mpuInterrupt = true;
   }
 
-  double getPitch() {
+  float getPitch() {
     return -ypr[1]*180/M_PI;
   }
 
-  double getYaw() {
+  float getYaw() {
     return ypr[0]*180/M_PI;
   }
 
-  double getRoll() {
+  float getRoll() {
     return -ypr[2]*180/M_PI;
   }
   

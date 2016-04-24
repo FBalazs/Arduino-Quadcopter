@@ -3,79 +3,110 @@
 #include "motor.h"
 #include "PID.h"
 
-int tps = 0; //Ticks per second
-long ctime; //Time of the beginning of the current tick
-long ptime; //Time of the beginning of the previous tick
-double dt; //Time since the last tick in seconds
-long clocktime = 0; //Used to count TPS, stores the time since the last TPS print
-
-PID pidPitch(0.15,0.0,0.0);
-PID pidYaw(0.0,0.0,0.0);
-PID pidRoll(0.15,0.0,0.0);
-Motor motFL(9), motFR(10), motBL(11), motBR(12);
-
-void setup() {
-  ptime = micros();
-  clocktime = ptime;
+class QuadControl : public CommListener {
+  int tps; //Ticks per second
+  long ctime; //Time of the beginning of the current tick
+  long ptime; //Time of the beginning of the previous tick
+  double dt; //Time since the last tick in seconds
+  long clocktime; //Used to count TPS, stores the time since the last TPS print
   
-  Sensors::init(0);
-  Comm::init(57600);
-  motFL.updateSpeed(0.0);
-  motFR.updateSpeed(0.0);
-  motBL.updateSpeed(0.0);
-  motBR.updateSpeed(0.0);
-  
-  delay(1000);
-}
+  Comm comm;
+  PID pidPitch, pidYaw, pidRoll;
+  Motor motFL, motFR, motBL, motBR;
 
-double pidp, pidy, pidr, chl;
+  float chl, chp, chy, chr;
+  double pidp, pidy, pidr;
 
-void loop() {
-  //Time management
-  ctime = micros();
-  dt = (ctime-ptime)/1000000.0;
-  if(ctime-clocktime >= 1000000){
-    Comm::sendTPS(tps);
-    Comm::print("mpuSamples ");
-    Comm::print(String(Sensors::getSampleCount()));
-    Comm::print("\n");
-    Sensors::resetSampleCount();
-    tps = 0;
-    clocktime = ctime;
-  }
-  tps++;
+public:
+  QuadControl():tps(0), clocktime(0),
+                comm(57600, *this),
+                pidPitch(0.15, 0.0, 0.0),
+                pidYaw(0.0, 0.0, 0.0),
+                pidRoll(0.15, 0.0, 0.0),
+                motFL(9),
+                motFR(10),
+                motBL(11),
+                motBR(12) {
+    ptime = micros();
+    clocktime = ptime;
 
-  if(false && (tps % 100) == 0 ){
-    Comm::print("pitch=");
-    Comm::print(String(Sensors::getPitch()));
-    Comm::print("\tyaw=");
-    Comm::print(String(Sensors::getYaw()));
-    Comm::print("\troll=");
-    Comm::print(String(Sensors::getRoll()));
-    Comm::print("\n");
-  }
-  
-  Sensors::update();
-  Comm::update();
-  
-  pidp = pidPitch.compute(Sensors::getPitch(), Comm::getChPitch(), dt);
-  pidy = pidYaw.compute(Sensors::getYaw(), Comm::getChYaw(), dt);
-  pidr = pidRoll.compute(Sensors::getRoll(), Comm::getChRoll(), dt);
-  chl = Comm::getChLift();
-  // DEBUG
-  pidp = pidy = pidr = 0;
-  if(chl < 0.1) {
+    Sensors::init(0);
     motFL.updateSpeed(0.0);
     motFR.updateSpeed(0.0);
     motBL.updateSpeed(0.0);
     motBR.updateSpeed(0.0);
-  } else {
-    motFL.updateSpeed(chl-pidp+pidr);
-    motFR.updateSpeed(chl-pidp-pidr);
-    motBL.updateSpeed(chl+pidp+pidr);
-    motBR.updateSpeed(chl+pidp-pidr);
+    
+    //delay(1000);
   }
 
-  ptime = ctime;
+  void onControlCommand(const String params[]) {
+    chl = params[0].toFloat();
+    chp = params[1].toFloat();
+    chy = params[2].toFloat();
+    chr = params[3].toFloat();
+  }
+  
+  void onGainCommand(const String params[]) {
+    // TODO
+  }
+  
+  void onUnkownCommand(const String& cmd, const String params[], int paramLength) {
+    comm.sendError();
+  }
+
+  void update() {
+    //Time management
+    ctime = micros();
+    dt = (ctime-ptime)/1000000.0;
+    if(ctime-clocktime >= 1000000){
+      comm.sendTPS(tps);
+      comm.sendCmd(String("mpuSamples ")+Sensors::getSampleCount());
+      Sensors::resetSampleCount();
+      tps = 0;
+      clocktime = ctime;
+    }
+    tps++;
+  
+    if(false && (tps % 100) == 0) {
+      comm.sendCmd(String("pitch=")
+                  +String(Sensors::getPitch())
+                  +String("\tyaw=")
+                  +String(Sensors::getYaw())
+                  +String("\troll=")
+                  +String(Sensors::getRoll()));
+    }
+    
+    Sensors::update();
+    comm.update();
+    
+    pidp = pidPitch.compute(Sensors::getPitch(), chp, dt);
+    pidy = pidYaw.compute(Sensors::getYaw(), chy, dt);
+    pidr = pidRoll.compute(Sensors::getRoll(), chr, dt);
+    // DEBUG
+    pidp = pidy = pidr = 0;
+    if(chl < 0.1) {
+      motFL.updateSpeed(0.0);
+      motFR.updateSpeed(0.0);
+      motBL.updateSpeed(0.0);
+      motBR.updateSpeed(0.0);
+    } else {
+      motFL.updateSpeed(chl-pidp+pidr);
+      motFR.updateSpeed(chl-pidp-pidr);
+      motBL.updateSpeed(chl+pidp+pidr);
+      motBR.updateSpeed(chl+pidp-pidr);
+    }
+  
+    ptime = ctime;
+  }
+};
+
+QuadControl* quadControl;
+
+void setup() {
+  quadControl = new QuadControl();
+}
+
+void loop() {
+  quadControl->update();
 }
 

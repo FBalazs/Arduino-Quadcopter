@@ -3,13 +3,13 @@
 #include <Arduino.h>
 
 void Motor::calibrate(){
-  delay(1500);
+  /*delay(1500);
   servo.writeMicroseconds(MAX_PULSE_LENGTH);
   delay(500);
   servo.writeMicroseconds(MID_PULSE_LENGTH);
   delay(1200);
   servo.writeMicroseconds(MIN_PULSE_LENGTH);
-  delay(2000);
+  delay(2000);*/
 }
 
 void Motor::updateSpeed(double speed){
@@ -17,6 +17,7 @@ void Motor::updateSpeed(double speed){
     speed = 1.0;
   if(speed < 0.0)
     speed = 0.0;
-  servo.writeMicroseconds(speed*(MAX_PULSE_LENGTH - MIN_PULSE_LENGTH) + MIN_PULSE_LENGTH);
+  analogWrite(pin, speed*(MAX_POW-MIN_POW) + MIN_POW);
+  //servo.writeMicroseconds(speed*(MAX_PULSE_LENGTH - MIN_PULSE_LENGTH) + MIN_PULSE_LENGTH);
 }
 
