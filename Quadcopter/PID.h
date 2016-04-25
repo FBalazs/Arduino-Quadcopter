@@ -22,7 +22,7 @@ public:
     return output;
   }
 
-  double updateGains(double p, double i, double d) {
+  void updateGains(double p, double i, double d) {
     pGain = p;
     iGain = i;
     dGain = d;

@@ -26,6 +26,8 @@ public class ControlWindow extends JFrame implements WindowListener, Comm.CommLi
 	private static final long serialVersionUID = -8274994178068566823L;
 	
 	private boolean closing = false;
+	private Log log;
+	
 	private Comm comm;
 	
 	private JMenu mnViews;
@@ -54,6 +56,12 @@ public class ControlWindow extends JFrame implements WindowListener, Comm.CommLi
 		setResizable(true);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(this);
+		
+		try {
+			log = new Log("log");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		
 		comm = new Comm(commPort, baud, this);
 		
@@ -200,6 +208,13 @@ public class ControlWindow extends JFrame implements WindowListener, Comm.CommLi
 				}
 			}
 		}.start();
+		
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		comm.writeString("g 0.0015 0.0 0.0\n");
 	}
 	
 	@Override
@@ -220,10 +235,11 @@ public class ControlWindow extends JFrame implements WindowListener, Comm.CommLi
 	}
 
 	@Override
-	public void onPosCommand(float p, float y, float r) {
+	public void onStateCommand(float p, float y, float r, double mfl, double mfr, double mbl, double mbr) {
 		lblPitch.setText("pitch: "+p);
 		lblYaw.setText("yaw: "+y);
 		lblRoll.setText("roll: "+r);
+		log.println(p+";"+y+";"+r+";"+mfl+";"+mfr+";"+mbl+";"+mbr);
 	}
 
 	@Override
@@ -243,6 +259,7 @@ public class ControlWindow extends JFrame implements WindowListener, Comm.CommLi
 	@Override
 	public void windowClosing(WindowEvent e) {
 		closing = true;
+		log.close();
 		comm.close();
 		System.exit(0);
 	}

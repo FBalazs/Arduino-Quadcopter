@@ -12,7 +12,7 @@ public class Comm implements Runnable {
 		void onCharReceived(char c);
 		void onTPSCommand(int tps);
 		void onMPUCommand(int sps);
-		void onPosCommand(float p, float y, float r);
+		void onStateCommand(float p, float y, float r, double mfl, double mfr, double mbl, double mbr);
 		void onUnknownCommand(String cmd, String[] params);
 	}
 	
@@ -73,10 +73,14 @@ public class Comm implements Runnable {
 				listener.onMPUCommand(Integer.parseInt(params[0]));
 				return;
 			}
-			if(cmd.equals("pos") && params.length == 3) {
-				listener.onPosCommand(Float.parseFloat(params[0]),
+			if(cmd.equals("state") && params.length == 7) {
+				listener.onStateCommand(Float.parseFloat(params[0]),
 						Float.parseFloat(params[1]),
-						Float.parseFloat(params[2]));
+						Float.parseFloat(params[2]),
+						Double.parseDouble(params[3]),
+						Double.parseDouble(params[4]),
+						Double.parseDouble(params[5]),
+						Double.parseDouble(params[6]));
 				return;
 			}
 		} catch(Exception e) {
@@ -85,7 +89,7 @@ public class Comm implements Runnable {
 		listener.onUnknownCommand(cmd, params);
 	}
 	
-	StringBuilder ccmd = new StringBuilder();
+	private StringBuilder ccmd = new StringBuilder();
 	
 	public synchronized void update() {
 		if(0 < available()) {
