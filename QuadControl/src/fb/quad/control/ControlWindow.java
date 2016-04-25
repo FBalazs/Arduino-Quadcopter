@@ -81,8 +81,8 @@ public class ControlWindow extends JFrame implements WindowListener, Comm.CommLi
 		cbMiConsoleViewAutoscroll.setSelected(true);
 		mnConsoleView.add(cbMiConsoleViewAutoscroll);
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{20, 0, 20, 0, 20};
-		gridBagLayout.rowHeights = new int[]{20, 0, 20, 0, 20};
+		gridBagLayout.columnWidths = new int[]{20, 300, 20, 300, 20};
+		gridBagLayout.rowHeights = new int[]{20, 300, 20, 300, 20};
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0};
 		gridBagLayout.rowWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0};
 		getContentPane().setLayout(gridBagLayout);
