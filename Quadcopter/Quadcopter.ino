@@ -8,7 +8,7 @@ class QuadControl : public CommListener {
   long ctime; //Time of the beginning of the current tick
   long ptime; //Time of the beginning of the previous tick
   double dt; //Time since the last tick in seconds
-  long clocktime; //Used to count TPS, stores the time since the last TPS print
+  long clocktime, statetime; //Used to count TPS, stores the time since the last TPS print
   
   Comm comm;
   PID pidPitch, pidYaw, pidRoll;
@@ -20,15 +20,16 @@ class QuadControl : public CommListener {
 public:
   QuadControl():tps(0), clocktime(0),
                 comm(57600, *this),
-                pidPitch(0.15, 0.0, 0.0),
+                pidPitch(0.5, 0.0, 0.0),
                 pidYaw(0.0, 0.0, 0.0),
-                pidRoll(0.15, 0.0, 0.0),
+                pidRoll(0.5, 0.0, 0.0),
                 motFL(9),
                 motFR(10),
                 motBL(11),
                 motBR(12) {
     ptime = micros();
     clocktime = ptime;
+    statetime = ptime;
 
     Sensors::init(0);
     motFL.updateSpeed(0.0);
@@ -60,20 +61,22 @@ public:
     dt = (ctime-ptime)/1000000.0;
     if(ctime-clocktime >= 1000000){
       comm.sendTPS(tps);
-      comm.sendCmd(String("mpuSamples ")+Sensors::getSampleCount());
+      comm.send(String("mpuSamples ")+Sensors::getSampleCount()+'\n');
       Sensors::resetSampleCount();
       tps = 0;
       clocktime = ctime;
     }
     tps++;
-  
-    if(false && (tps % 100) == 0) {
-      comm.sendCmd(String("pitch=")
-                  +String(Sensors::getPitch())
-                  +String("\tyaw=")
-                  +String(Sensors::getYaw())
-                  +String("\troll=")
-                  +String(Sensors::getRoll()));
+
+    if(false && ctime-statetime >= 1000000/25) {
+      comm.send("pos ");
+      comm.send(String(Sensors::getPitch()));
+      comm.send(" ");
+      comm.send(String(Sensors::getYaw()));
+      comm.send(" ");
+      comm.send(String(Sensors::getRoll()));
+      comm.send("\n");
+      statetime = ctime;
     }
     
     Sensors::update();

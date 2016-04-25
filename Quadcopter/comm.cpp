@@ -22,32 +22,32 @@ void Comm::parseCommand(const String& cmd, const String params[], int pn) {
 }
 
 void Comm::update() {
-  while(CommSerial.available()){
+  while(CommSerial.available()){ // TODO timeout
     char c = (char)CommSerial.read();
-    ccmd += c;
     if(c == '\n'){
       String cmd = "";
       int pn = 0;
-      for(int i = 0; i < ccmd.length(); i++){
+      for(int i = 0; i < ccmd.length(); ++i){
         if(ccmd[i] == '\t' || ccmd[i] == ' ')
-          pn++;
+          ++pn;
         if(pn == 0)
           cmd += ccmd[i];
       }
       String params[pn];
       int i = 0;
       String cparam = "";
-      for(int j = cmd.length()+1; j < ccmd.length(); j++)
-        if(ccmd[j] == '\t' || ccmd[j] == ' ' || ccmd[j] == '\n'){
-          params[i] = cparam;
+      for(int j = cmd.length()+1; j < ccmd.length(); ++j)
+        if(ccmd[j] == '\t' || ccmd[j] == ' ') {
+          params[i++] = cparam;
           cparam = "";
-          i++;
-        }
-        else
+        } else
           cparam += ccmd[j];
+      if(pn != 0)
+        params[i] = cparam;
       parseCommand(cmd, params, pn);
       ccmd = "";
-    }
+    } else
+      ccmd += c;
   }
 }
 
@@ -56,16 +56,11 @@ void Comm::send(const String& str) {
   CommSerial.flush();
 }
 
-void Comm::sendCmd(const String& cmd) {
-  CommSerial.println(cmd);
-  CommSerial.flush();
-}
-
 void Comm::sendTPS(int tps){
-  sendCmd(String("tps: ")+tps);
+  send(String("tps ")+String(tps)+'\n');
 }
 
 void Comm::sendError() {
-  sendCmd(String("error"));
+  send(String("error")+'\n');
 }
 
